@@ -23,7 +23,7 @@
         <div class="mb-3 row">
             <label for="name_customer" class="col-sm-2 col-form-label">Nama Pembeli</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="name_customer" name="name_customer">
+                <input type="text" class="form-control" id="name_customer" name="name_customer" required>
             </div>
         </div>
 
@@ -34,7 +34,7 @@
                 <select name="medicines[]" id="medicines" class="form-select">
                     <option selected hidden disabled>Pesanan 1</option>
                     @foreach ($medicines as $item)
-                        <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                        <option value="{{ $item['id'] }}">{{ $item['name'] }} - Rp. {{ number_format($item['price'],0,',','.') }}</option>
                     @endforeach
                 </select>
                 {{-- div pembungkus untuk tambahan select yg akan muncul --}}
@@ -60,7 +60,7 @@
         let el = `<br><select name="medicines[]" id="medicines" class="form-select">
                     <option selected hidden disabled>Pesanan ${no}</option>
                     @foreach ($medicines as $item)
-                        <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                        <option value="{{ $item['id'] }}">{{ $item['name'] }} - Rp. {{ number_format($item['price'],0,',','.') }}</option>
                     @endforeach
                   </select>`;
 

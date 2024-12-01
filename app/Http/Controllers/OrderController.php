@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Medicine;
 use App\Models\Order;
+use App\Models\Medicine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class OrderController extends Controller
 {
@@ -66,15 +67,13 @@ class OrderController extends Controller
             // total harga pembelian ditambahkan dari keseluruhan sub_price dan medicines
             $totalPrice += (int)$item['sub_price'];
         }
-        // harga beli ditambah 10% ppn
-        $priceWithPPN = $totalPrice + ($totalPrice * 0.1);
         // tambah data ke database
         $proses = Order::create([
             // data user_id diambil dari id akun kasir yang sedang login
             'user_id' => Auth::user()->id,
             'medicines' => $arrayAssocMedicines,
             'name_customer' => $request->name_customer,
-            'total_price' => $priceWithPPN,
+            'total_price' => $totalPrice,
         ]);
 
         if ($proses) {
@@ -91,9 +90,10 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        $order = Order::find($id);
+        return view('order.kasir.print', compact('order'));
     }
 
     /**
@@ -118,5 +118,20 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function downloadPDF($id) 
+    {
+        // ambil data yang diperlukan, dan pastikan data berformat array
+        $order = Order::find($id)->toArray();
+
+        // mengirim inisial variable dari data yang akan digunakan pada layout pdf
+        view()->share('order', $order);
+
+        // panggil blade yang akan di download 
+        $pdf = PDF::loadview('order.kasir.download-pdf', $order);
+
+        // kembalikan atau hasilkan bentuk pdf dengan nama file tertentu
+        return $pdf->download('receipt.pdf');
     }
 }

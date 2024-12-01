@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id'); // FK untuk id yang auto increments bertipe data bigInteger
             $table->json('medicines');
-            $table->string('nama_costumer');
+            $table->string('name_customer');
             $table->integer('total_price');
             $table->timestamps();
         });
